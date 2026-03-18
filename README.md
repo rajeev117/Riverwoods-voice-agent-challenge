@@ -1,28 +1,34 @@
-graph TD;
-  A[CRM / Scheduler] --> B[/internal/send/];
-  B --> C[Twilio Call];
+Riverwood Demo AI Voice Agent Challenge 
 
-  C --> D{Answered?};
+## AI Voice Agent Flow
 
-  D -->|No| E[Voicemail];
-  E --> F[Hangup];
+```mermaid
+flowchart TD
+    A[CRM / Scheduler] --> B[/internal/send/]
+    B --> C[Twilio Outbound Call]
 
-  D -->|Yes| G[Greeting];
-  G --> H[Gather Input];
+    C --> D{Call Answered?}
 
-  H --> I[STT];
-  I --> J{Cached?};
+    D -->|Voicemail| E[Leave Voicemail]
+    E --> F[Hangup]
 
-  J -->|Yes| K[Cached Response];
-  J -->|No| L[OpenAI];
+    D -->|Human Answers| G[/voice Greeting/]
 
-  K --> M[TTS];
-  L --> M;
+    G --> H[/gather Input/]
+    H --> I[Speech to Text]
 
-  M --> N{End Call?};
+    I --> J{Pinecone Cache?}
 
-  N -->|No| H;
-  N -->|Yes| O[Goodbye];
+    J -->|Yes| K[Cached Response]
+    J -->|No| L[OpenAI gpt-4o-mini]
 
-  O --> P[Hangup];
-  P --> Q[Save to DB];
+    K --> M[Text to Speech]
+    L --> M
+
+    M --> N{End Call?}
+
+    N -->|No| H
+    N -->|Yes| O[Goodbye]
+
+    O --> P[Hangup]
+    P --> Q[Save to MongoDB]
