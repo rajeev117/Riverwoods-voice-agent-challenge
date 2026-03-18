@@ -1,0 +1,9 @@
+Flask
+twilio
+python-dotenv
+gunicorn
+requests
+openai
+pymongo
+pinecone
+redis
