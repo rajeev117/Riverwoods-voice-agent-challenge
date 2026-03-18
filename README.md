@@ -1,29 +1,28 @@
-flowchart TD
-    A[CRM / Scheduler] --> B[/internal/send/]
-    B --> C[Twilio Outbound Call]
+graph TD;
+  A[CRM / Scheduler] --> B[/internal/send/];
+  B --> C[Twilio Call];
 
-    C --> D{Call Answered?}
+  C --> D{Answered?};
 
-    D -->|Voicemail| E[Leave Voicemail]
-    E --> F[Hangup]
+  D -->|No| E[Voicemail];
+  E --> F[Hangup];
 
-    D -->|Human Answers| G[/voice Greeting/]
+  D -->|Yes| G[Greeting];
+  G --> H[Gather Input];
 
-    G --> H[/gather Input/]
-    H --> I[Speech to Text]
+  H --> I[STT];
+  I --> J{Cached?};
 
-    I --> J{Pinecone Cache?}
+  J -->|Yes| K[Cached Response];
+  J -->|No| L[OpenAI];
 
-    J -->|Yes| K[Cached Response]
-    J -->|No| L[OpenAI gpt-4o-mini]
+  K --> M[TTS];
+  L --> M;
 
-    K --> M[Text to Speech]
-    L --> M
+  M --> N{End Call?};
 
-    M --> N{End Call?}
+  N -->|No| H;
+  N -->|Yes| O[Goodbye];
 
-    N -->|No| H
-    N -->|Yes| O[Goodbye]
-
-    O --> P[Hangup]
-    P --> Q[Save to MongoDB]
+  O --> P[Hangup];
+  P --> Q[Save to DB];
